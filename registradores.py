@@ -8,7 +8,6 @@ Classe de Registradores MIPS para o simulador GUI.
 
 class MIPS_Registers:
     def __init__(self):
-        # Dicionário de nomes de registradores
         self.reg_map = {
             0: "$zero", 1: "$at", 2: "$v0", 3: "$v1",
             4: "$a0", 5: "$a1", 6: "$a2", 7: "$a3",
@@ -19,52 +18,38 @@ class MIPS_Registers:
             24: "$t8", 25: "$t9", 26: "$k0", 27: "$k1",
             28: "$gp", 29: "$sp", 30: "$fp", 31: "$ra"
         }
-        
-        # Inicializa todos os registradores com 0
         self.registers = {num: 0 for num in range(32)}
-        
-        # Configura valores iniciais especiais
-        self.registers[29] = 0x10000000  # $sp (stack pointer)
-    
+        self.registers[29] = 0x10000000  # $sp
+
     def get_register(self, reg):
-        """Obtém valor do registrador (aceita nome ou número)."""
         if isinstance(reg, str):
-            # Encontra o número do registrador pelo nome
             reg = next((num for num, name in self.reg_map.items() if name == reg), None)
             if reg is None:
                 raise ValueError(f"Registrador inválido: {reg}")
-        
         return self.registers.get(reg, 0)
-    
+
     def set_register(self, reg, value):
-        """Define valor do registrador (bloqueia $zero)."""
         if isinstance(reg, str):
             reg = next((num for num, name in self.reg_map.items() if name == reg), None)
             if reg is None:
                 raise ValueError(f"Registrador inválido: {reg}")
-        
-        if reg == 0:  # $zero é read-only
+        if reg == 0:
             return
-            
-        self.registers[reg] = value & 0xFFFFFFFF  # Garante 32 bits
-    
+        self.registers[reg] = value & 0xFFFFFFFF
+
     def get_all_registers(self):
-        """Retorna lista de tuplas (nome, valor_hex) ordenada por número"""
         return [
             (self.reg_map[num], f"0x{self.registers[num]:08X}") 
             for num in sorted(self.registers.keys())
         ]
-    
-    def __str__(self):
-        """Representação textual para debug."""
-        return "\n".join([f"{name}: {hex(val)}" for name, val in self.get_all_registers()])
-    
-    def reset(self):
-        """Reinicia todos os registradores"""
-        self.registers = {num: 0 for num in range(32)}
-        self.registers[29] = 0x10000000  # $sp
 
-# Teste rápido
+    def __str__(self):
+        return "\n".join([f"{name}: {hex(val)}" for name, val in self.get_all_registers()])
+
+    def reset(self):
+        self.registers = {num: 0 for num in range(32)}
+        self.registers[29] = 0x10000000
+
 if __name__ == "__main__":
     regs = MIPS_Registers()
     print("=== Estado Inicial dos Registradores ===")

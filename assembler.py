@@ -238,7 +238,7 @@ def parse_instruction(line):
     elif instr_info["type"] == "S":
         return 0x0000000C
 
-# ===================== FUNÇÃO DE MONTAGEM =====================
+
 def assemble_file(filepath):
     """Monta um arquivo .asm para código binário e dados"""
     try:
@@ -303,7 +303,6 @@ def assemble_file(filepath):
     except Exception as e:
         raise ValueError(f"Erro durante a montagem: {str(e)}")
 
-# ===================== TESTE =====================
 if __name__ == "__main__":
     if len(sys.argv) != 2:
         print("Uso: python assembler.py arquivo.asm")
